@@ -3,8 +3,6 @@ const isRelevantModule = (source, importPath) => {
     return false;
   }
   if (source.test && !source.test(importPath)) {
-    console.log(source);
-    console.log(importPath);
     return false;
   }
   return true;
@@ -40,7 +38,9 @@ const macros = (babel) => {
           const flagValue = flags[flagName];
 
           if (!(flagName in flags)) {
-            return;
+            throw new Error(
+              `${flagName} not supported for module ${importPath}`,
+            );
           }
 
           if (flagValue === null) {
