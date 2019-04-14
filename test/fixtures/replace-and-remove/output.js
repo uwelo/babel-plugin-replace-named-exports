@@ -1,10 +1,14 @@
 if (true) {
-  console.log("FEATURE_A");
+  console.log("EXPORT_A");
 }
 
 if ("b" === "b") {
-  console.log("FEATURE_B");
+  console.log("EXPORT_B");
+}
+
+if (true) {
+  console.log("EXPORT_C");
 }
 
 const replace = `a${"b"}c`;
-const ignore = `a${FEATURE_B_C}c`;
+const ignore = `a${EXPORT_B_C}c`;

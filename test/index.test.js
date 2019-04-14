@@ -18,16 +18,21 @@ const loadOutput = fixture => fs
   .toString()
   .trim();
 
-describe('babel-plugin-replace-flags', () => {
-  it('should replace flags and remove import', () => {
+describe('babel-plugin-replace-named-exports', () => {
+  it('should replace exports and remove import', () => {
     const input = loadInput('replace-and-remove');
     const expected = loadOutput('replace-and-remove');
     const { code } = transform(input, {
-      source: 'featureFlags',
-      flags: {
-        FEATURE_A: true,
-        FEATURE_B: 'b',
-      },
+      modules: [
+        {
+          match: 'module',
+          exports: {
+            EXPORT_A: true,
+            EXPORT_B: 'b',
+            EXPORT_C: true,
+          },
+        },
+      ],
     });
     expect(code).toEqual(expected);
   });
@@ -36,29 +41,52 @@ describe('babel-plugin-replace-flags', () => {
     const input = loadInput('replace-and-remove-regexp');
     const expected = loadOutput('replace-and-remove-regexp');
     const { code } = transform(input, {
-      source: /\/featureFlags$/,
-      flags: {
-        FEATURE_A: true,
-        FEATURE_B: 'b',
-      },
+      modules: [
+        {
+          match: /\/module$/,
+          exports: {
+            EXPORT_A: true,
+            EXPORT_B: 'b',
+          },
+        },
+      ],
     });
     expect(code).toEqual(expected);
   });
 
-  it('should throw for undefined flag', () => {
-    const input = loadInput('throw-for-undefined-flag');
+  it('should keep export when set to null', () => {
+    const input = loadInput('keep-export-when-set-to-null');
+    const expected = loadOutput('keep-export-when-set-to-null');
+    const { code } = transform(input, {
+      modules: [
+        {
+          match: 'module',
+          exports: {
+            EXPORT_A: true,
+            EXPORT_B: null,
+          },
+        },
+      ],
+    });
+    expect(code).toEqual(expected);
+  });
+
+  it('should throw for undefined export', () => {
+    const input = loadInput('throw-for-undefined-export');
 
     expect(() => {
       transform(input, {
-        source: /\/featureFlags$/,
-        flags: {
-          FEATURE_A: true,
-          FEATURE_B: 'b',
-        },
+        modules: [
+          {
+            match: /\/module$/,
+            exports: {
+              EXPORT_A: true,
+              EXPORT_B: 'b',
+            },
+          },
+        ],
       });
-    }).toThrowError(
-      /FEATURE_X not supported for module .\/config\/featureFlags/,
-    );
+    }).toThrowError(/EXPORT_X not supported for module .\/module/);
   });
 
   it('should ignore other modules', () => {
@@ -66,11 +94,39 @@ describe('babel-plugin-replace-flags', () => {
     const expected = loadOutput('ignore-not-matching-modules');
 
     const { code } = transform(input, {
-      source: /\/featureFlags$/,
-      flags: {
-        FEATURE_A: true,
-        FEATURE_B: 'b',
-      },
+      modules: [
+        {
+          match: /\/module$/,
+          exports: {
+            EXPORT_A: true,
+            EXPORT_B: 'b',
+          },
+        },
+      ],
+    });
+    expect(code).toEqual(expected);
+  });
+
+  it('should work with multiple modules', () => {
+    const input = loadInput('multiple-modules');
+    const expected = loadOutput('multiple-modules');
+
+    const { code } = transform(input, {
+      modules: [
+        {
+          match: 'module',
+          exports: {
+            EXPORT_A: true,
+            EXPORT_B: 'b',
+          },
+        },
+        {
+          match: 'second-module',
+          exports: {
+            EXPORT: 'de',
+          },
+        },
+      ],
     });
     expect(code).toEqual(expected);
   });

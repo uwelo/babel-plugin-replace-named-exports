@@ -1,11 +1,10 @@
 {
-  "name": "babel-plugin-replace-flags",
+  "name": "babel-plugin-replace-named-exports",
   "version": "1.0.0",
-  "description": "",
+  "description": "babel plugin to replace named exports with configurable values",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest",
-    "build": "babel src -d build"
+    "test": "jest"
   },
   "keywords": [],
   "author": "Uwe Loydl <uloydl@team.mobile.de>",

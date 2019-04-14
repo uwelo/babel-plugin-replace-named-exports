@@ -1,11 +1,14 @@
-import { FEATURE_A, FEATURE_B } from "featureFlags";
+import { EXPORT_A, EXPORT_B, EXPORT_C as exportC } from "module";
 
-if (FEATURE_A) {
-  console.log("FEATURE_A");
+if (EXPORT_A) {
+  console.log("EXPORT_A");
 }
-if (FEATURE_B === "b") {
-  console.log("FEATURE_B");
+if (EXPORT_B === "b") {
+  console.log("EXPORT_B");
+}
+if (exportC) {
+  console.log("EXPORT_C");
 }
 
-const replace = `a${FEATURE_B}c`
-const ignore = `a${FEATURE_B_C}c`
+const replace = `a${EXPORT_B}c`
+const ignore = `a${EXPORT_B_C}c`

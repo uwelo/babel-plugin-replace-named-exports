@@ -1,8 +1,8 @@
-import { FEATURE_A, FEATURE_B } from "./config/featureFlags";
+import { EXPORT_A, EXPORT_B } from "./module";
 
-if (FEATURE_A) {
-  console.log("FEATURE_A");
+if (EXPORT_A) {
+  console.log("EXPORT_A");
 }
-if (FEATURE_B === "b") {
-  console.log("FEATURE_B");
+if (EXPORT_B === "b") {
+  console.log("EXPORT_B");
 }

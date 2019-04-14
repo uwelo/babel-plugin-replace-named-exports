@@ -1,9 +1,9 @@
-import { FEATURE_A, FEATURE_B } from "other-module";
+import { EXPORT_A, EXPORT_B } from "other-module";
 
-if (FEATURE_A) {
-  console.log("FEATURE_A");
+if (EXPORT_A) {
+  console.log("EXPORT_A");
 }
 
-if (FEATURE_B === "b") {
-  console.log("FEATURE_B");
+if (EXPORT_B === "b") {
+  console.log("EXPORT_B");
 }

@@ -1,6 +1,6 @@
-import { EXPORT_A, EXPORT_B } from "other-module";
+import { EXPORT_B } from "module";
 
-if (EXPORT_A) {
+if (true) {
   console.log("EXPORT_A");
 }
 

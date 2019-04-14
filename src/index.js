@@ -1,73 +1,84 @@
-const isRelevantModule = (source, importPath) => {
-  if (typeof source === 'string' && source !== importPath) {
+const isRelevantModule = (match, importPath) => {
+  if (typeof match === 'string' && match !== importPath) {
     return false;
   }
-  if (source.test && !source.test(importPath)) {
+  if (match.test && !match.test(importPath)) {
     return false;
   }
   return true;
 };
 
-const macros = (babel) => {
-  const t = babel.types;
+const getExportsToReplace = (options, importPath) => {
+  const { modules } = options;
+  const flagsToReplace = modules.reduce((memo, module) => {
+    const { match, exports } = module;
+    if (isRelevantModule(match, importPath)) {
+      return {
+        ...memo,
+        ...exports,
+      };
+    }
+    return memo;
+  }, {});
 
-  const buildIdentifier = (value) => {
-    let replacement;
-    if (typeof value === 'boolean') {
-      replacement = t.booleanLiteral(value);
-    }
-    if (typeof value === 'string') {
-      replacement = t.stringLiteral(value);
-    }
-    return replacement;
-  };
+  if (Object.keys(flagsToReplace).length === 0) {
+    return undefined;
+  }
+  return flagsToReplace;
+};
+
+const getReplacement = (t, value) => {
+  let replacement;
+  if (typeof value === 'boolean') {
+    replacement = t.booleanLiteral(value);
+  }
+  if (typeof value === 'string') {
+    replacement = t.stringLiteral(value);
+  }
+
+  return replacement;
+};
+
+module.exports = (babel) => {
+  const t = babel.types;
 
   return {
     visitor: {
       ImportSpecifier(path, state) {
         const importPath = path.parent.source.value;
-        const { source, flags } = state.opts;
+        const exportsToReplace = getExportsToReplace(state.opts, importPath);
 
-        if (!isRelevantModule(source, importPath)) {
-          return;
-        }
+        if (exportsToReplace) {
+          const exportName = path.node.imported.name;
+          const localExportName = path.node.local.name;
+          const exportValue = exportsToReplace[exportName];
 
-        if (flags) {
-          const flagName = path.node.imported.name;
-          const localBindingName = path.node.local.name;
-          const flagValue = flags[flagName];
-
-          if (!(flagName in flags)) {
+          if (!(exportName in exportsToReplace)) {
             throw new Error(
-              `${flagName} not supported for module ${importPath}`,
+              `${exportName} not supported for module ${importPath}`,
             );
           }
 
-          if (flagValue === null) {
+          if (exportValue === null) {
             return;
           }
 
-          const binding = path.scope.getBinding(localBindingName);
+          const binding = path.scope.getBinding(localExportName);
           binding.referencePaths.forEach((p) => {
-            p.replaceWith(buildIdentifier(flagValue, flagName));
+            p.replaceWith(getReplacement(t, exportValue, exportName));
           });
 
           path.remove();
-          path.scope.removeOwnBinding(localBindingName);
+          path.scope.removeOwnBinding(localExportName);
         }
       },
 
       ImportDeclaration: {
         exit(path, state) {
           const importPath = path.node.source.value;
-          const { source, flags } = state.opts;
-
-          if (!isRelevantModule(source, importPath)) {
-            return;
-          }
-
-          // remove flag source imports when no specifiers are left
-          if (flags && path.get('specifiers').length === 0) {
+          const exportsToReplace = getExportsToReplace(state.opts, importPath);
+          // remove module import when no specifiers are left
+          if (exportsToReplace && path.get('specifiers').length === 0) {
             path.remove();
           }
         },
@@ -75,5 +86,3 @@ const macros = (babel) => {
     },
   };
 };
-
-module.exports = macros;

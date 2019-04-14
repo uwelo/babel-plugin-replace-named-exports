@@ -1,7 +1,7 @@
 if (true) {
-  console.log("FEATURE_A");
+  console.log("EXPORT_A");
 }
 
 if ("b" === "b") {
-  console.log("FEATURE_B");
+  console.log("EXPORT_B");
 }
