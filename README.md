@@ -56,9 +56,9 @@ if (true) {
   console.log('debug');
 }
 
-if (FEATURE_A) {
+if (true) {
   console.log('FEATURE_A');
-} else if (FEATURE_B) {
+} else if (false) {
   console.log('FEATURE_B');
 }
 
