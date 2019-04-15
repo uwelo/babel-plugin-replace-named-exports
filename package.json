@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
-    "preversion": "npm t"
+    "prepublish": "npm t"
   },
   "keywords": [],
   "author": "Uwe Loydl <uloydl@team.mobile.de>",
