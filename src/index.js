@@ -59,7 +59,7 @@ module.exports = (babel) => {
             );
           }
 
-          if (exportValue === null) {
+          if (exportValue === null || exportValue === undefined) {
             return;
           }
 
