@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 const isRelevantModule = (match, importPath) => {
   if (typeof match === 'string' && match !== importPath) {
     return false;
@@ -29,6 +30,7 @@ const getExportsToReplace = (options, importPath) => {
 
 const getReplacement = (t, value) => {
   let replacement;
+
   if (typeof value === 'boolean') {
     replacement = t.booleanLiteral(value);
   }
@@ -39,7 +41,7 @@ const getReplacement = (t, value) => {
   return replacement;
 };
 
-module.exports = (babel) => {
+module.exports = babel => {
   const t = babel.types;
 
   return {
@@ -55,16 +57,24 @@ module.exports = (babel) => {
 
           if (!(exportName in exportsToReplace)) {
             throw new Error(
-              `${exportName} not supported for module ${importPath}`,
+              // eslint-disable-next-line comma-dangle
+              `${exportName} not supported for module ${importPath}`
             );
           }
 
-          if (exportValue === null || exportValue === undefined) {
+          if (exportValue === null) {
             return;
           }
 
           const binding = path.scope.getBinding(localExportName);
-          binding.referencePaths.forEach((p) => {
+
+          binding.referencePaths.forEach(p => {
+            if (p.parent.type === 'CallExpression') {
+              p.parentPath.replaceWith(
+                // eslint-disable-next-line comma-dangle
+                getReplacement(t, exportValue, exportName)
+              );
+            }
             p.replaceWith(getReplacement(t, exportValue, exportName));
           });
 

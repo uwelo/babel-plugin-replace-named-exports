@@ -1,22 +1,26 @@
+/* eslint-disable implicit-arrow-linebreak */
 const fs = require('fs');
 const path = require('path');
 const { transformSync } = require('@babel/core');
 
 const plugin = require('../src');
 
-const transform = (input, options) => transformSync(input, {
-  plugins: [[plugin, options]],
-});
+const transform = (input, options) =>
+  transformSync(input, {
+    plugins: [[plugin, options]],
+  });
 
-const loadInput = fixture => fs
-  .readFileSync(path.join(__dirname, 'fixtures', fixture, 'input.js'))
-  .toString()
-  .trim();
+const loadInput = fixture =>
+  fs
+    .readFileSync(path.join(__dirname, 'fixtures', fixture, 'input.js'))
+    .toString()
+    .trim();
 
-const loadOutput = fixture => fs
-  .readFileSync(path.join(__dirname, 'fixtures', fixture, 'output.js'))
-  .toString()
-  .trim();
+const loadOutput = fixture =>
+  fs
+    .readFileSync(path.join(__dirname, 'fixtures', fixture, 'output.js'))
+    .toString()
+    .trim();
 
 describe('babel-plugin-replace-named-exports', () => {
   it('should replace exports and remove import', () => {
@@ -30,6 +34,7 @@ describe('babel-plugin-replace-named-exports', () => {
             EXPORT_A: true,
             EXPORT_B: 'b',
             EXPORT_C: true,
+            getLanguage: 'en',
           },
         },
       ],

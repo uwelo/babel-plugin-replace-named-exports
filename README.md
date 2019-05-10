@@ -21,7 +21,12 @@ The plugin can be configured to replace the exports for multiple files. To match
           },
           {
             match: /\/my-local-config$/,
-            exports: { FEATURE_A: true, FEATURE_B: false, VERSION: 1.2 },
+            exports: {
+              FEATURE_A: true,
+              FEATURE_B: false,
+              VERSION: 1.2,
+              getLanguage: 'en',
+            },
           },
         ],
       },
@@ -34,7 +39,7 @@ The plugin can be configured to replace the exports for multiple files. To match
 
 ```javascript
 import { DEBUG } from 'debug';
-import { FEATURE_A, FEATURE_B, VERSION } from './my-local-config';
+import { FEATURE_A, FEATURE_B, VERSION, getLanguage } from './my-local-config';
 
 if (DEBUG) {
   console.log('debug');
@@ -44,6 +49,10 @@ if (FEATURE_A) {
   console.log('FEATURE_A');
 } else if (FEATURE_B) {
   console.log('FEATURE_B');
+}
+
+if (getLanguage() === 'en') {
+  console.log('Language is en');
 }
 
 console.log(VERSION);
@@ -62,10 +71,14 @@ if (true) {
   console.log('FEATURE_B');
 }
 
+if (getLanguage() === 'en') {
+  console.log('Language is en');
+}
+
 console.log(1.2);
 ```
 
-If you set the export to `null` or `undefined` the export will not be removed.
+If you set the export to `null` the export will not be removed.
 
 ```js
 {
