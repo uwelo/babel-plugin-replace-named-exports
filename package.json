@@ -4,7 +4,10 @@
   "description": "babel plugin to replace named exports with configurable values",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "preversion": "npm t",
+    "xxpostversion": "npm publish"
   },
   "keywords": [],
   "author": "Uwe Loydl <uloydl@team.mobile.de>",
