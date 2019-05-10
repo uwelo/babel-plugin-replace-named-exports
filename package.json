@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-replace-named-exports",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "babel plugin to replace named exports with configurable values",
   "main": "src/index.js",
   "scripts": {
