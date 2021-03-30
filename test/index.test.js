@@ -10,13 +10,13 @@ const transform = (input, options) =>
     plugins: [[plugin, options]],
   });
 
-const loadInput = fixture =>
+const loadInput = (fixture) =>
   fs
     .readFileSync(path.join(__dirname, 'fixtures', fixture, 'input.js'))
     .toString()
     .trim();
 
-const loadOutput = fixture =>
+const loadOutput = (fixture) =>
   fs
     .readFileSync(path.join(__dirname, 'fixtures', fixture, 'output.js'))
     .toString()
